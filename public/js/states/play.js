@@ -5,16 +5,26 @@ var playState = {
   },
 
   create: function(){
+    var that = this;
+
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     this.playerSprite = initialisePlayer();
+    this.zombieSprites = [];
 
-    game.time.events.add(2000 + Math.random() * 2000, newZombie);
+    game.time.events.add(2000 + Math.random() * 2000, function(){
+      newZombie(that.zombieSprites);
+    });
   },
 
   update: function(){
     updatePlayerRotation(this.playerSprite);
     updatePlayerMovement(this.playerSprite);
+
+    for(var i = 0; i < this.zombieSprites.length; i++){
+      game.physics.arcade.moveToObject(this.zombieSprites[i], this.playerSprite, 100, 10000);
+      console.log("Move zombie sprite", i);
+    }
   }
 }
 
@@ -76,7 +86,7 @@ var updatePlayerMovement = function(playerSprite){
   }
 };
 
-var newZombie = function(){
+var newZombie = function(zombieSprites){
   var zombie = game.add.sprite(Math.random() * 800, Math.random() * 600, 'player_walk');
 
   zombie.animations.add('walk');
@@ -86,7 +96,9 @@ var newZombie = function(){
 
   game.physics.enable(zombie, Phaser.Physics.ARCADE);
 
-  game.time.events.add(2000 + Math.random() * 2000, newZombie);
+  game.time.events.add(2000 + Math.random() * 2000, function(){
+    newZombie(zombieSprites);
+  });
 
-  return zombie;
+  zombieSprites.push(zombie);
 }
