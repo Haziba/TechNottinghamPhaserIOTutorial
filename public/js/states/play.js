@@ -22,8 +22,9 @@ var playState = {
     updatePlayerMovement(this.playerSprite);
 
     for(var i = 0; i < this.zombieSprites.length; i++){
-      game.physics.arcade.moveToObject(this.zombieSprites[i], this.playerSprite, 100, 10000);
-      console.log("Move zombie sprite", i);
+      game.physics.arcade.moveToObject(this.zombieSprites[i], this.playerSprite, 100);
+
+      this.zombieSprites[i].rotation = game.physics.arcade.angleToXY(this.zombieSprites[i], this.playerSprite.x, this.playerSprite.y) + Math.PI / 2;
     }
   }
 }
@@ -90,6 +91,7 @@ var newZombie = function(zombieSprites){
   var zombie = game.add.sprite(Math.random() * 800, Math.random() * 600, 'player_walk');
 
   zombie.animations.add('walk');
+  zombie.animations.play('walk', 10, true);
   zombie.anchor = new Phaser.Point(0.5, 0.5);
 
   zombie.tint = 0x009688;
