@@ -8,6 +8,8 @@ var playState = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     this.playerSprite = initialisePlayer();
+
+    game.time.events.add(2000 + Math.random() * 2000, newZombie);
   },
 
   update: function(){
@@ -73,3 +75,18 @@ var updatePlayerMovement = function(playerSprite){
     playerSprite.moving = false;
   }
 };
+
+var newZombie = function(){
+  var zombie = game.add.sprite(Math.random() * 800, Math.random() * 600, 'player_walk');
+
+  zombie.animations.add('walk');
+  zombie.anchor = new Phaser.Point(0.5, 0.5);
+
+  zombie.tint = 0x009688;
+
+  game.physics.enable(zombie, Phaser.Physics.ARCADE);
+
+  game.time.events.add(2000 + Math.random() * 2000, newZombie);
+
+  return zombie;
+}
