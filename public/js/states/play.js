@@ -26,6 +26,14 @@ var playState = {
 
       this.zombieSprites[i].rotation = game.physics.arcade.angleToXY(this.zombieSprites[i], this.playerSprite.x, this.playerSprite.y) + Math.PI / 2;
     }
+  },
+
+  render: function(){
+    game.debug.body(this.playerSprite);
+
+    for(var i = 0; i < this.zombieSprites.length; i++){
+      game.debug.body(this.zombieSprites[i]);
+    }
   }
 }
 
@@ -51,7 +59,10 @@ var initialisePlayer = function(){
   playerSprite.moving = false;
   playerSprite.forwardSpeed = 200;
 
-  return playerSprite
+  playerSprite.body.immovable = true;
+  playerSprite.body.setSize(60, 60, 14, 19);
+
+  return playerSprite;
 }
 
 var updatePlayerRotation = function(playerSprite){
@@ -97,6 +108,8 @@ var newZombie = function(zombieSprites){
   zombie.tint = 0x009688;
 
   game.physics.enable(zombie, Phaser.Physics.ARCADE);
+
+  zombie.body.setSize(60, 60, 14, 19);
 
   game.time.events.add(2000 + Math.random() * 2000, function(){
     newZombie(zombieSprites);
