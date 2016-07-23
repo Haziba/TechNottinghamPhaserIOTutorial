@@ -12,15 +12,15 @@ var playState = {
     this.playerSprite = initialisePlayer();
     this.zombieSprites = [];
 
-    //game.time.events.add(2000 + Math.random() * 2000, function(){
-    //  newZombie(that.zombieSprites);
-    //});
-    newZombie(that.zombieSprites);
+    game.time.events.add(2000 + Math.random() * 2000, function(){
+      newZombie(that.zombieSprites);
+    });
   },
 
   update: function(){
     updatePlayerRotation(this.playerSprite);
     updatePlayerMovement(this.playerSprite);
+    updatePlayerDamage(this.playerSprite);
 
     for(var i = 0; i < this.zombieSprites.length; i++){
       updateZombie(this.zombieSprites[i], this.playerSprite);
@@ -38,6 +38,7 @@ var initialisePlayer = function(){
   face.scale.y = 0.3;
 
   playerSprite.addChild(face);
+  playerSprite.face = face;
 
   playerSprite.animations.add('walk');
   playerSprite.anchor = new Phaser.Point(0.5, 0.5);
@@ -53,6 +54,11 @@ var initialisePlayer = function(){
 
   playerSprite.body.immovable = true;
   playerSprite.body.setSize(60, 60, 14, 19);
+
+  playerSprite.zombieHit = function(){
+    playerSprite.damage(0.1);
+    playerSprite.redTint = 120;
+  }
 
   return playerSprite;
 }
@@ -90,6 +96,20 @@ var updatePlayerMovement = function(playerSprite){
   }
 };
 
+var updatePlayerDamage = function(playerSprite){
+  if(playerSprite.redTint < 255){
+    var redTintHex = Phaser.Color.componentToHex(playerSprite.redTint);
+    playerSprite.tint = "0xFF" + redTintHex + redTintHex;
+
+    playerSprite.redTint += 10;
+
+    if(playerSprite.redTint >= 255)
+      playerSprite.tint = "0xFFFFFF"
+
+    playerSprite.face.tint = playerSprite.tint;
+  }
+}
+
 var newZombie = function(zombieSprites){
   var zombie = game.add.sprite(Math.random() * 800, Math.random() * 600, 'player_walk');
 
@@ -105,7 +125,7 @@ var newZombie = function(zombieSprites){
   zombie.body.setSize(60, 60, 14, 19);
 
   game.time.events.add(2000 + Math.random() * 2000, function(){
-    //newZombie(zombieSprites);
+    newZombie(zombieSprites);
   });
 
   zombieSprites.push(zombie);
@@ -118,6 +138,8 @@ var updateZombie = function(zombie, player){
 
   game.physics.arcade.collide(player, zombie, function(){
     if(!zombie.touchingPlayer){
+      player.zombieHit();
+
       zombie.touchingPlayer = true;
 
       game.time.events.add(300, function(){
