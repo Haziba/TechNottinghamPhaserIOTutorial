@@ -20,8 +20,12 @@ var playState = {
     this.zombieSprites = [];
     this.bulletSprites = [];
 
+    this.scoreText = game.add.text(game.world.centerX, 50, "Score: 0", {font: "36px Arial", align: "center"})
+    this.scoreText.anchor.set(0.5);
+    this.scoreText.score = 0;
+
     game.time.events.add(2000 + Math.random() * 2000, function(){
-      newZombie(that.zombieSprites);
+      newZombie(that.zombieSprites, that.scoreText);
     });
   },
 
@@ -157,7 +161,7 @@ var newBullet = function(playerSprite, bulletSprites){
   bulletSprites.push(bullet);
 }
 
-var newZombie = function(zombieSprites){
+var newZombie = function(zombieSprites, scoreText){
   var zombie = game.add.sprite(Math.random() * 800, Math.random() * 600, 'player_walk');
 
   zombie.animations.add('walk');
@@ -172,10 +176,13 @@ var newZombie = function(zombieSprites){
   zombie.body.setSize(60, 60, 14, 19);
   zombie.events.onKilled.add(function(){
     zombieSprites.splice(zombieSprites.indexOf(zombie), 1);
+
+    scoreText.score += 100;
+    scoreText.text = "Score: " + scoreText.score;
   });
 
   game.time.events.add(2000 + Math.random() * 2000, function(){
-    newZombie(zombieSprites);
+    newZombie(zombieSprites, scoreText);
   });
 
   zombieSprites.push(zombie);
