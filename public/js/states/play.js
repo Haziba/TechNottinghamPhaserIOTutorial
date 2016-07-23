@@ -33,8 +33,8 @@ var playState = {
       newBullet(this.playerSprite, this.bulletSprites);
     }
 
-    for(var i = 0; i < this.zombieSprites.length; i++){
-      updateZombie(this.zombieSprites[i], this.playerSprite);
+    for(var i = this.zombieSprites.length-1; i >= 0; i--){
+      updateZombie(this.zombieSprites[i], this.playerSprite, this.bulletSprites);
     }
   },
 }
@@ -152,6 +152,9 @@ var newZombie = function(zombieSprites){
   zombie.body.collideWorldBounds = true;
 
   zombie.body.setSize(60, 60, 14, 19);
+  zombie.events.onKilled.add(function(){
+    zombieSprites.splice(zombieSprites.indexOf(zombie), 1);
+  });
 
   game.time.events.add(2000 + Math.random() * 2000, function(){
     newZombie(zombieSprites);
@@ -160,7 +163,7 @@ var newZombie = function(zombieSprites){
   zombieSprites.push(zombie);
 }
 
-var updateZombie = function(zombie, player){
+var updateZombie = function(zombie, player, bullets){
   game.physics.arcade.moveToObject(zombie, player, zombie.touchingPlayer ? -50 : 100);
 
   zombie.rotation = game.physics.arcade.angleToXY(zombie, player.x, player.y) + Math.PI / 2;
@@ -176,4 +179,12 @@ var updateZombie = function(zombie, player){
       });
     }
   });
+
+  for(var i = bullets.length-1; i >= 0; i--)
+    game.physics.arcade.collide(bullets[i], zombie, function(){
+      zombie.damage(0.5);
+
+      bullets[i].destroy();
+      bullets.splice(i, 1);
+    });
 }
