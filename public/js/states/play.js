@@ -54,6 +54,7 @@ var initialisePlayer = function(){
   game.physics.enable(playerSprite, Phaser.Physics.ARCADE);
 
   playerSprite.body.allowRotation = true;
+  playerSprite.body.collideWorldBounds = true;
   playerSprite.rotationSpeed = 0.05;
 
   playerSprite.moving = false;
@@ -108,6 +109,7 @@ var newZombie = function(zombieSprites){
   zombie.tint = 0x009688;
 
   game.physics.enable(zombie, Phaser.Physics.ARCADE);
+  zombie.body.collideWorldBounds = true;
 
   zombie.body.setSize(60, 60, 14, 19);
 
