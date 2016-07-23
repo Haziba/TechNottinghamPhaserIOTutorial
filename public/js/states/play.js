@@ -85,7 +85,9 @@ var initialisePlayer = function(){
   playerSprite.zombieHit = function(){
     playerSprite.damage(0.1);
     playerSprite.redTint = 120;
-    playerSprite.healthbar.over.width = playerSprite.healthbar.under.width * playerSprite.health;
+
+    // +0.1 as player is still alive unless health is < 0, meaning 0 is still alive
+    playerSprite.healthbar.over.width = playerSprite.healthbar.under.width * (playerSprite.health + 0.1);
   }
 
   return playerSprite;
