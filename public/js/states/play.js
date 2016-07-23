@@ -76,22 +76,22 @@ var initialisePlayer = function(){
 }
 
 var updatePlayerRotation = function(playerSprite){
-  if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+  if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || game.input.keyboard.isDown(Phaser.Keyboard.A))
     playerSprite.rotation -= playerSprite.rotationSpeed;
 
-  if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+  if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.D))
     playerSprite.rotation += playerSprite.rotationSpeed;
 };
 
 var updatePlayerMovement = function(playerSprite){
-  if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+  if(game.input.keyboard.isDown(Phaser.Keyboard.UP) || game.input.keyboard.isDown(Phaser.Keyboard.W)){
     game.physics.arcade.velocityFromRotation(playerSprite.rotation - Math.PI / 2, playerSprite.forwardSpeed, playerSprite.body.velocity);
 
     if(!playerSprite.moving)
       playerSprite.animations.play('walk', 30, true);
 
     playerSprite.moving = true;
-  } else if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+  } else if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN) || game.input.keyboard.isDown(Phaser.Keyboard.S)){
     game.physics.arcade.velocityFromRotation(playerSprite.rotation - Math.PI / 2, -playerSprite.forwardSpeed, playerSprite.body.velocity);
 
     if(!playerSprite.moving)
