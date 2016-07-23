@@ -2,12 +2,15 @@ var playState = {
   preload: function(){
     game.load.spritesheet('player_walk', 'imgs/player_walk_sprite_sheet.png', 88, 98, 15);
     game.load.image('player_face', 'imgs/player_face.png');
+    game.load.image('background', 'imgs/background.png');
   },
 
   create: function(){
     var that = this;
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    game.add.tileSprite(0, 0, 800, 600, 'background');
 
     this.playerSprite = initialisePlayer();
     this.zombieSprites = [];
