@@ -4,6 +4,7 @@ var playState = {
     game.load.image('player_face', 'imgs/player_face.png');
     game.load.image('background', 'imgs/background.png');
     game.load.image('bullet', 'imgs/bullet.png');
+    game.load.image('healthbar', 'imgs/healthbar.png');
   },
 
   create: function(){
@@ -51,6 +52,16 @@ var initialisePlayer = function(){
   playerSprite.addChild(face);
   playerSprite.face = face;
 
+  var underHealthbar = game.add.sprite(0, 0, 'healthbar');
+  underHealthbar.tint = 0x000000;
+
+  var overHealthbar = game.add.sprite(0, 0, 'healthbar');
+
+  overHealthbar.x = underHealthbar.x = playerSprite.x - (underHealthbar.width / 2);
+  overHealthbar.y = underHealthbar.y = playerSprite.y - (playerSprite.height / 2);
+
+  playerSprite.healthbar = {over: overHealthbar, under: underHealthbar};
+
   playerSprite.animations.add('walk');
   playerSprite.anchor = new Phaser.Point(0.5, 0.5);
 
@@ -70,6 +81,7 @@ var initialisePlayer = function(){
   playerSprite.zombieHit = function(){
     playerSprite.damage(0.1);
     playerSprite.redTint = 120;
+    playerSprite.healthbar.over.width = playerSprite.healthbar.under.width * playerSprite.health;
   }
 
   return playerSprite;
@@ -106,6 +118,12 @@ var updatePlayerMovement = function(playerSprite){
 
     playerSprite.moving = false;
   }
+
+  playerSprite.healthbar.under.x = playerSprite.healthbar.over.x = playerSprite.x - playerSprite.healthbar.under.width / 2;
+  playerSprite.healthbar.under.y = playerSprite.healthbar.over.y = playerSprite.y - playerSprite.width / 2;
+
+  game.world.bringToTop(playerSprite.healthbar.under);
+  game.world.bringToTop(playerSprite.healthbar.over);
 };
 
 var updatePlayerDamage = function(playerSprite){
