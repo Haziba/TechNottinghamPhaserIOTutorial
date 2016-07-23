@@ -3,6 +3,7 @@ var playState = {
     game.load.spritesheet('player_walk', 'imgs/player_walk_sprite_sheet.png', 88, 98, 15);
     game.load.image('player_face', 'imgs/player_face.png');
     game.load.image('background', 'imgs/background.png');
+    game.load.image('bullet', 'imgs/bullet.png');
   },
 
   create: function(){
@@ -10,10 +11,13 @@ var playState = {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
+    game.input.mouse.capture = true;
+
     game.add.tileSprite(0, 0, 800, 600, 'background');
 
     this.playerSprite = initialisePlayer();
     this.zombieSprites = [];
+    this.bulletSprites = [];
 
     game.time.events.add(2000 + Math.random() * 2000, function(){
       newZombie(that.zombieSprites);
@@ -24,6 +28,10 @@ var playState = {
     updatePlayerRotation(this.playerSprite);
     updatePlayerMovement(this.playerSprite);
     updatePlayerDamage(this.playerSprite);
+
+    if(this.playerSprite.reloaded && game.input.activePointer.leftButton.isDown){
+      newBullet(this.playerSprite, this.bulletSprites);
+    }
 
     for(var i = 0; i < this.zombieSprites.length; i++){
       updateZombie(this.zombieSprites[i], this.playerSprite);
@@ -54,6 +62,7 @@ var initialisePlayer = function(){
 
   playerSprite.moving = false;
   playerSprite.forwardSpeed = 200;
+  playerSprite.reloaded = true;
 
   playerSprite.body.immovable = true;
   playerSprite.body.setSize(60, 60, 14, 19);
@@ -111,6 +120,23 @@ var updatePlayerDamage = function(playerSprite){
 
     playerSprite.face.tint = playerSprite.tint;
   }
+}
+
+var newBullet = function(playerSprite, bulletSprites){
+  var bullet = game.add.sprite(playerSprite.x, playerSprite.y, 'bullet');
+
+  bullet.anchor = new Phaser.Point(0.5, 0.5);
+
+  game.physics.enable(bullet, Phaser.Physics.ARCADE);
+  game.physics.arcade.moveToPointer(bullet, 400);
+
+  playerSprite.reloaded = false;
+
+  game.time.events.add(500, function(){
+    playerSprite.reloaded = true;
+  });
+
+  bulletSprites.push(bullet);
 }
 
 var newZombie = function(zombieSprites){
