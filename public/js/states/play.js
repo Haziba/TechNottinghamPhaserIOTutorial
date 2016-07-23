@@ -12,9 +12,10 @@ var playState = {
     this.playerSprite = initialisePlayer();
     this.zombieSprites = [];
 
-    game.time.events.add(2000 + Math.random() * 2000, function(){
-      newZombie(that.zombieSprites);
-    });
+    //game.time.events.add(2000 + Math.random() * 2000, function(){
+    //  newZombie(that.zombieSprites);
+    //});
+    newZombie(that.zombieSprites);
   },
 
   update: function(){
@@ -22,19 +23,9 @@ var playState = {
     updatePlayerMovement(this.playerSprite);
 
     for(var i = 0; i < this.zombieSprites.length; i++){
-      game.physics.arcade.moveToObject(this.zombieSprites[i], this.playerSprite, 100);
-
-      this.zombieSprites[i].rotation = game.physics.arcade.angleToXY(this.zombieSprites[i], this.playerSprite.x, this.playerSprite.y) + Math.PI / 2;
+      updateZombie(this.zombieSprites[i], this.playerSprite);
     }
   },
-
-  render: function(){
-    game.debug.body(this.playerSprite);
-
-    for(var i = 0; i < this.zombieSprites.length; i++){
-      game.debug.body(this.zombieSprites[i]);
-    }
-  }
 }
 
 var initialisePlayer = function(){
@@ -114,8 +105,24 @@ var newZombie = function(zombieSprites){
   zombie.body.setSize(60, 60, 14, 19);
 
   game.time.events.add(2000 + Math.random() * 2000, function(){
-    newZombie(zombieSprites);
+    //newZombie(zombieSprites);
   });
 
   zombieSprites.push(zombie);
+}
+
+var updateZombie = function(zombie, player){
+  game.physics.arcade.moveToObject(zombie, player, zombie.touchingPlayer ? -50 : 100);
+
+  zombie.rotation = game.physics.arcade.angleToXY(zombie, player.x, player.y) + Math.PI / 2;
+
+  game.physics.arcade.collide(player, zombie, function(){
+    if(!zombie.touchingPlayer){
+      zombie.touchingPlayer = true;
+
+      game.time.events.add(300, function(){
+        zombie.touchingPlayer = false
+      });
+    }
+  });
 }
