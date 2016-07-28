@@ -24,6 +24,11 @@ var playState = {
     this.scoreText.anchor.set(0.5);
     this.scoreText.score = 0;
 
+    this.playerSprite.kill = function(){
+      game.score = that.scoreText.score;
+      game.state.start('game-over');
+    }
+
     game.time.events.add(2000 + Math.random() * 2000, function(){
       newZombie(that.zombieSprites, that.scoreText);
     });
@@ -87,7 +92,7 @@ var initialisePlayer = function(){
     playerSprite.redTint = 120;
 
     // +0.1 as player is still alive unless health is < 0, meaning 0 is still alive
-    playerSprite.healthbar.over.width = playerSprite.healthbar.under.width * (playerSprite.health + 0.1);
+    playerSprite.healthbar.over.width = playerSprite.healthbar.under.width * ((playerSprite.health + 0.1) / 1.1);
   }
 
   return playerSprite;

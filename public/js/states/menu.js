@@ -9,6 +9,7 @@ var menuState = {
         font: '50px Arial',
         fill: '#ffffff',
         boundsAlignH: 'center',
+        align: 'center',
       });
 
     // Set the text's bounding box to centre it
