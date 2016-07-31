@@ -7,6 +7,6 @@ app.get('/', function(req, res){
   res.sendfile('index.html');
 });
 
-app.listen(3008, function() {
+app.listen(3000, function() {
   console.log('listening');
 });
